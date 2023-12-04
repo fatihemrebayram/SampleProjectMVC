@@ -1,0 +1,166 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using X.PagedList.Mvc.Core
+@model ModelsLayer.Models.RadioCodes.BureauCrudViewModel
+<div class="fixed-action-btn">
+    <a href="#AddEdit" class="btn-floating btn-large modal-trigger red" id="addButton">
+        <i class="large material-icons">add</i>
+    </a>
+</div>
+
+<div class="page-titles">
+    <div class="d-flex align-items-center">
+        <a href="/RadioCodes">
+            <i class="small material-icons">arrow_back</i>
+        </a>
+        <h5 class="font-medium m-b-0">Telsiz Kodları  </h5>
+        <div class="custom-breadcrumb ml-auto">
+            <a href="/" class="breadcrumb">Anasayfa</a>
+            <a href="/RadioCodes" class="breadcrumb">Telsiz kodlar </a>
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col s12">
+            <div class="card">
+                <div class="card-content">
+                    <div class="row">
+                        <div class="col s2">
+                            <div class="input-field">
+                                <h5 class="card-title">Telsiz Kodları</h5>
+                            </div>
+                        </div>
+                        <div class="col s2">
+                        </div>
+                        <div class="col s2">
+                        </div>
+                        <div class="col s6">
+                            <div class="row">
+                                <div class="col s2">
+                                </div>
+                                <div class="col s3">
+                                </div>
+
+                                <div class="col s3 ">
+                                </div>
+                                <div class="col s4">
+                                    @await Component.InvokeAsync("Search")
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <p></p>
+
+                    <div class="table-responsive">
+                        <table id="sunucuTable">
+                        </table>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Birim</th>
+                                    <th>Telsiz Kodu</th>
+
+
+
+                                    <th style="text-align: center; width: 20px;"></th>
+                                    <th style="text-align: center; width: 20px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in Model.Bureaus)
+                                {
+
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.RadioCode</td>
+
+                                        <td>
+                                            <a href="/Bureau?editId=@item.Id&unitId=@item.UnitId" class="waves-effect waves-light btn-small green">
+                                                <i class="material-icons">edit</i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="/Bureau/Delete/@item.Id" class="waves-effect waves-light btn-small delete" style="background-color: #E06B55">
+                                                <i class="material-icons">delete</i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        @Html.PagedListPager(Model.Bureaus, page => Url.Action("Index", new { page, ViewBag.SearchFor }), new X.PagedList.Web.Common.PagedListRenderOptions
+                        {
+                        DisplayLinkToIndividualPages = true,
+                        DisplayItemSliceAndTotal = false,
+                        DisplayPageCountAndCurrentLocation = false,
+                        MaximumPageNumbersToDisplay = 10,
+                        LiElementClasses = new[] { "page-item" },
+                        PageClasses = new[] { "page-link" }
+                        })
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="AddEdit" class="modal modal-fixed-footer" data-keyboard="false" data-backdrop="static">
+    <form asp-action="AddEdit" id="Add_Form">
+        <div class="modal-content">
+            <input hidden id="Id" length="120" asp-for="@Model.Bureau.Id" name="Id">
+            <input hidden id="unitId" type="search" length="120" asp-for="@Model.Bureau.UnitId" name="unitId" value="@ViewBag.unitId">
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="Sicil" length="120" asp-for="@Model.Bureau.Name" name="Name">
+                    <label for="Sicil">İsim</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <input id="Ad" type="text" asp-for="@Model.Bureau.RadioCode" name="RadioCode">
+                    <label for="Ad">Telsiz Kodu</label>
+                </div>
+            </div>
+
+       
+
+            <div asp-validation-summary="ModelOnly">
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn green waves-effect waves-green">
+                Gönder
+            </button>
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn red ">Kapat</a>
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+
+        function toggleBody(header) {
+            var body = header.nextElementSibling;
+            body.style.display = body.style.display === 'none' ? 'block' : 'none';
+        }
+
+
+
+    </script>
+}
